@@ -15,6 +15,11 @@ public interface MatchRepository extends CrudRepository<Match, Long>  {
 
     List<Match> getByTeam1OrTeam2OrderByDateDesc(String teamName1, String teamName2, Pageable pageable);
 
+	@Query("select m from Match m where (m.team1 = :teamName or m.team2 = :teamName) and m.date between :start and :end order by m.date desc")
+	List<Match> getMatchesByTeamByYear(@Param("teamName") String teamName, @Param("start") LocalDate start, @Param("end") LocalDate end);
+	//List<Match> getByTeam1AndDateBetweenOrTeam2AndDateBetweenOrderByDateDesc(String teamName1, LocalDate start, LocalDate end, String teamName2, LocalDate start1, LocalDate end1);
+
+
     default List<Match> findLatestMatchesbyTeam(String teamName, int count) {
         return getByTeam1OrTeam2OrderByDateDesc(teamName, teamName, PageRequest.of(0, count));
     }
